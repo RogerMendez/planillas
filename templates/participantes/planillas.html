@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Planillas de Entrega de Material
+{% endblock %}
+
+{% block sidebar %}
+{% include 'participantes/__menu.html' %}
+{% endblock %}
+
+{% block content %}
+{% load staticfiles %}
+<div class="row" id="">
+    <div class="col s12">
+        {% include 'includes/__form_get.html' %}
+    </div>
+</div>
+{% if sede %}
+    {% if participantes %}
+        <div class="row" id="printplanilla">
+            <div class="col s12">
+                <a href="" onclick="window.print();return false" class="waves-effect waves-light btn" target="_blank">
+                    <i class="material-icons left">print</i>Imprimir
+                </a>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
+
+<div class="row" id="cabeceraproaced1">
+    <div class="col s12 center-align center">
+        <h5 class="center center-align">Planilla de Asistencia Momento Presencial</h5>
+    </div>
+    <div class="col s12">
+        <div class="col s3 grey border">
+            <strong>CICLO I: </strong>
+        </div>
+        <div class="col s9 border">
+            {{ ciclo }}
+        </div>
+    </div>
+    <div class="col s12">
+        <div class="col s3 grey border">
+            <strong>CURSOS: </strong>
+        </div>
+        <div class="col s9 border">
+            {{ distrito }}
+        </div>
+    </div>
+
+    <div class="col s6">
+        <p>
+            <strong>Distrito: </strong>{{ distrito }}
+        </p>
+        <p class="">
+            <strong>Ciclo: </strong>{{ ciclo }}
+        </p>
+    </div>
+    <div class="col s6">
+        <p>
+            <strong>Fecha:</strong>{{ p.fecha }}
+        </p>
+        <p><strong>Tec. Seguimiento: </strong>{{ p.tecnico }}</p>
+    </div>
+</div>
+<div class="row">
+<div class="col s12">
+    <table class="bordered highlight responsive-table striped">
+        <thead>
+        <tr align="center">
+            <th>#</th>
+            <th>Apellidos</th>
+            <th>Nombres</th>
+            <th>Cedula</th>
+            <th width="20%">FIRMA</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for participante in participantes %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ participante.apellidos }}</td>
+                <td>{{ participante.nombres }}</td>
+                <td>{{ participante.ci }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+{% endblock %}
+
+{% block myscript13 %}
+<script>
+    $(document).ready(function () {
+        $('#id_sede').change(function () {
+            var sede = $('#id_sede').val()
+            if(sede){
+                $.ajax({
+                    data:{'sede': sede},
+                    url:"{% url 'participante-distritos-ajax' %}",
+                    type:'GET',
+                    success: function(data){
+                        $('#id_ciudad').html(data);
+                    },
+                    failure: function(data){
+                        console.log('error')
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
